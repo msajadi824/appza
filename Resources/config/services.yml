@@ -1,0 +1,19 @@
+services:
+    pouya_soft.j_sdate_service:
+        class: PouyaSoft\AppzaBundle\Service\jDateService
+        arguments: ["@request_stack"]
+        public: true
+
+    pouya_soft.sdate_extension:
+        class: PouyaSoft\AppzaBundle\Twig\PouyaSoftDateExtension
+        arguments: [ "@pouya_soft.j_sdate_service" ]
+        tags:
+            - { name: twig.extension }
+        public: true
+
+    pouya_soft.form.type.j_sdate:
+        class: PouyaSoft\AppzaBundle\Form\Type\PouyaSoftSDateType
+        tags:
+            - { name: form.type, alias: jSDate }
+        arguments: [ "@pouya_soft.j_sdate_service", "@request_stack" ]
+        public: true

@@ -1,0 +1,70 @@
+{
+    "name" : "pouyasoft_ir/appza-bundle",
+    "license": "proprietary",
+    "description" : "appza bundle private for pouyasoft",
+    "type" : "symfony-bundle",
+    "authors" : [
+        {
+            "name" : "mostafa sajadi",
+            "email" : "msajadi824@hotmail.com"
+        }
+    ],
+    "require" : {
+        "php": ">=7.2.5",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "ext-json": "*",
+        "alexandret/doctrine2-spatial": "^2.0",
+        "eightpoints/guzzle-bundle": "^8.2",
+        "endroid/qr-code-bundle": "^3.4",
+        "friendsofsymfony/ckeditor-bundle": "^2.2",
+        "friendsofsymfony/rest-bundle": "^3.0",
+        "helios-ag/fm-elfinder-bundle": "^10.0",
+        "jms/serializer-bundle": "^3.7",
+        "knplabs/knp-paginator-bundle": "^5.3",
+        "mpdf/mpdf": "^8.0",
+        "pouyasoft_ir/simple-date-bundle": "^5.0",
+        "pouyasoft_ir/user-bundle": "dev-master",
+        "roromix/spreadsheetbundle": "^1.0",
+        "vich/uploader-bundle": "^1.15",
+        "doctrine/annotations": "^1.0",
+        "doctrine/doctrine-bundle": "^2.1",
+        "doctrine/orm": "^2.7",
+        "symfony/flex": "^1.3.1",
+        "symfony/form": "5.1.*",
+        "symfony/framework-bundle": "5.1.*",
+        "symfony/mailer": "5.1.*",
+        "symfony/property-access": "5.1.*",
+        "symfony/property-info": "5.1.*",
+        "symfony/security-bundle": "5.1.*",
+        "symfony/translation": "5.1.*",
+        "symfony/twig-bundle": "^5.1",
+        "symfony/validator": "5.1.*",
+        "symfony/web-link": "5.1.*",
+        "symfony/yaml": "5.1.*",
+        "twig/extra-bundle": "^2.12|^3.0",
+        "twig/twig": "^2.12|^3.0"
+    },
+    "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.3",
+        "symfony/var-dumper": "^5.1"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
+    "autoload" : {
+        "psr-4": {
+            "PouyaSoft\\AppzaBundle": "src/"
+        }
+    },
+    "target-dir" : "PouyaSoft/AppzaBundle",
+    "extra": {
+        "symfony": {
+            "require": "5.1.*"
+        }
+    },
+    "minimum-stability": "dev"
+}
