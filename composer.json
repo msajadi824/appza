@@ -56,8 +56,8 @@
         "sort-packages": true
     },
     "autoload" : {
-        "psr-4": {
-            "PouyaSoft\\AppzaBundle": "src/"
+        "psr-0": {
+            "PouyaSoft\\AppzaBundle": ""
         }
     },
     "target-dir" : "PouyaSoft/AppzaBundle",
