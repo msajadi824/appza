@@ -3,6 +3,7 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: true
         bind:
             Roromix\Bundle\SpreadsheetBundle\Factory: '@phpspreadsheet'
             PouyaSoft\SDateBundle\Service\jDateService: '@pouya_soft.j_sdate_service'
@@ -10,12 +11,8 @@ services:
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
-    PouyaSoft\AppzaBundle\:
-        resource: '../../'
-        exclude:
-            - '../../DependencyInjection/'
-            - '../../Entity/'
-            - '../../Tests/'
+    PouyaSoft\AppzaBundle\Services:
+        resource: '../../services/*'
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
