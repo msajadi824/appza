@@ -1,0 +1,224 @@
+{% use "bootstrap_4_horizontal_layout.html.twig" %}
+
+{%- block submit_widget -%}
+    {%- set type = type|default('submit') -%}
+    {% set attr = attr|merge({'class': (attr.class|default('') ~ ' btn-success')|trim}) %}
+    {{ block('button_widget') }}
+{%- endblock submit_widget -%}
+
+{% block form_label_class -%}
+    {% if label is not same as(false) %}col-sm-2{% else %}col-sm-0{% endif %}
+{%- endblock form_label_class %}
+
+{% block form_group_class -%}
+    {% if label is not same as(false) %}col-sm-10{% else %}col-sm-12{% endif %}
+{%- endblock form_group_class %}
+
+{% block form_widget_simple -%}
+    {% if attr.unit is defined -%}
+        <div class="input-group">
+    {% endif %}
+    {{- parent() -}}
+    {% if attr.help is defined -%}
+        <small class="form-text text-muted">{{ attr.help|raw }}</small>
+    {%- endif %}
+    {% if attr.unit is defined -%}
+        <div class="input-group-append">
+            <span class="input-group-text">{{ attr.unit|raw }}</span>
+         </div>
+    {%- endif %}
+    {% if attr.unit is defined -%}
+        </div>
+    {%- endif %}
+    {% if attr.selectize is defined -%}
+        <script>
+            $(function() { $('#{{ id }}').selectize(); });
+        </script>
+    {%- endif %}
+{%- endblock form_widget_simple %}
+
+{% block choice_widget_collapsed -%}
+    {% if attr.unit is defined -%}
+        <div class="input-group">
+    {% endif %}
+    {{- parent() -}}
+    {% if attr.help is defined -%}
+        <small class="form-text text-muted">{{ attr.help|raw }}</small>
+    {%- endif %}
+    {% if attr.unit is defined -%}
+        <div class="input-group-append">
+            <span class="input-group-text">{{ attr.unit|raw }}</span>
+        </div>
+    {%- endif %}
+    {% if attr.unit is defined -%}
+        </div>
+    {%- endif %}
+    {% if attr.selectize is defined -%}
+        <script>
+            $(function() { $('#{{ id }}').selectize(); });
+        </script>
+    {%- endif %}
+{%- endblock choice_widget_collapsed %}
+
+{% block time_widget -%}
+    {% if widget == 'single_text' %}
+        {{- block('form_widget_simple') -}}
+    {% else -%}
+        {% set attr = attr|merge({class: (attr.class|default('') ~ ' form-inline')|trim}) -%}
+        {% if datetime is not defined or false == datetime -%}
+            <div {{ block('widget_container_attributes') -}}>
+        {%- endif -%}
+        {% if with_seconds %}{{ form_widget(form.second) }}:{% endif %}{% if with_minutes %}{{ form_widget(form.minute) }}:{% endif %}{{- form_widget(form.hour) }}
+        {% if datetime is not defined or false == datetime -%}
+            </div>
+        {%- endif -%}
+    {% endif %}
+{%- endblock time_widget %}
+
+{% block pouyasoft_file_row -%}
+    {% set force_error = true %}
+    {{- block('form_row') }}
+{%- endblock %}
+
+{% block pouyasoft_file_widget %}
+    <div class="vich-image">
+        {{ form_widget(form.file, {'required': required}) }}
+
+        <div>
+            {% if image_uri %}
+                <a class="btn btn-sm btn-info ml-1" href="{{ image_uri }}" data-lightbox="slide">{{ view_label }}</a>
+            {% endif %}
+            {% if download_uri %}
+                <a class="btn btn-sm btn-info ml-1" target="blank" href="{{ download_uri }}">{{ download_label }}</a>
+            {% endif %}
+
+            {% if form.delete is defined %}
+                <span class="d-inline-block ml-1">{{ form_widget(form.delete) }}</span>
+            {% endif %}
+        </div>
+
+        {% if croppieOptions %}
+            {{ form_widget(form.picFileCropped) }}
+
+            {% set croppieOptions = {
+                'viewport': { 'width': 100, 'height': 100 },
+                'boundary': { 'width': 150, 'height': 150 },
+                'enableExif': true,
+                'enableOrientation': true
+            }|merge(croppieOptions) %}
+
+            <script type="text/javascript">
+                $(function () {
+                    $('#{{ form.file.vars.id }}').on('change', function () {
+                        croppie_pic_file_upload = $('#{{ form.file.vars.id }}');
+                        croppie_pic_file_hidden = $('#{{ form.picFileCropped.vars.id }}');
+
+                        if(croppie_croppie) croppie_croppie.croppie('destroy');
+                        croppie_croppie = $('#modal_croppie_croppie').croppie({{ croppieOptions|json_encode(constant('JSON_PRETTY_PRINT'))|raw }});
+
+                        $('#modal_croppie').modal('show');
+                    });
+                });
+            </script>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block pouyasoft_file_label %}
+    {% set label = label|trans|default(label) %}
+    {{- block('form_label') }}
+{% endblock %}
+
+{% block checkbox_radio_label -%}
+    {# Do not display the label if widget is not defined in order to prevent double label rendering #}
+    {%- if widget is defined -%}
+        {%- if required -%}
+            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' required')|trim}) -%}
+        {%- endif -%}
+        {%- if parent_label_class is defined -%}
+            {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' ' ~ parent_label_class)|trim}) -%}
+        {%- endif -%}
+        {%- if label is not same as(false) and label is empty -%}
+            {%- if label_format is not empty -%}
+                {%- set label = label_format|replace({
+                    '%name%': name,
+                    '%id%': id,
+                }) -%}
+            {%- else -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+        {%- endif -%}
+        <label{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}>
+        {{- widget|raw }}{{ label is not same as(false) ? (translation_domain is same as(false) ? label : label|trans({}, translation_domain))|raw -}}
+        </label>
+    {%- endif -%}
+{%- endblock checkbox_radio_label %}
+
+{% block position_widget %}
+    {% if map %}
+        {% set map_style = 'width: 100%; height: 400px; border: 1px solid grey; margin-bottom: 10px; ' ~ (map_attr.style is defined ? map_attr.style : '') %}
+        {% set default_map_attr = { 'id': id ~ '_iframe_map', 'src': map_src, 'onload': id ~ '_iframe_map_loaded()' } %}
+
+        <iframe {% with { attr: default_map_attr|merge(map_attr)|merge({'style': map_style}) } %}{{ block('attributes') }}{% endwith %}></iframe>
+    {% endif %}
+
+    {{ block('form') }}
+
+    {% if map %}
+        <script type="text/javascript">
+            var {{ id }}_frame_loaded = 0;
+            function {{ id }}_iframe_map_loaded() {
+                {{ id }}_frame_loaded = 1;
+            }
+
+            $(function() {
+                var latInput_{{ id }} = $('#{{ form.latitude.vars.id }}');
+                var lngInput_{{ id }} = $('#{{ form.longitude.vars.id }}');
+                var iframe_{{ id }} = $('#{{ id }}_iframe_map');
+
+                iframe_{{ id }}.on("load", function() {
+                    {{ id }}_send_message();
+                });
+
+                if({{ id }}_frame_loaded) {
+                    {{ id }}_send_message();
+                }
+
+                function {{ id }}_send_message() {
+                    iframe_{{ id }}[0].contentWindow.postMessage({lat: latInput_{{ id }}.val(), lng: lngInput_{{ id }}.val(), id: '{{ id }}', draggable: {{ disabled ? 'false' : 'true' }} }, '*');
+                }
+
+                function listenMessage(msg) {
+                    if(msg.data.id === '{{ id }}') {
+                        latInput_{{ id }}.val(msg.data.lat);
+                        lngInput_{{ id }}.val(msg.data.lng);
+                    }
+                }
+
+                if (window.addEventListener) {
+                    window.addEventListener("message", listenMessage, false);
+                } else {
+                    window.attachEvent("onmessage", listenMessage);
+                }
+
+                latInput_{{ id }}.on('change', {{ id }}_send_message);
+                lngInput_{{ id }}.on('change', {{ id }}_send_message);
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+
+{%- block pouyasoft_collection_widget -%}
+    {% if prototype is defined and not prototype.rendered %}
+        {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
+    {% endif %}
+    {{- block('form_widget') -}}
+
+    {% if javascript %}
+    <script>
+        $(function () {
+            collectionInit('div#{{ id }}', '{{ javascript_add_title }}', {{ form.children|length }}, {{ javascript_add_click_function_name ?: 'null' }});
+        });
+    </script>
+    {% endif %}
+{%- endblock pouyasoft_collection_widget -%}
