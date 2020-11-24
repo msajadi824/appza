@@ -56,11 +56,10 @@
         "sort-packages": true
     },
     "autoload" : {
-        "psr-0": {
-            "PouyaSoft\\AppzaBundle": ""
+        "psr-4": {
+            "PouyaSoft\\AppzaBundle\\": ""
         }
     },
-    "target-dir" : "PouyaSoft/AppzaBundle",
     "extra": {
         "symfony": {
             "require": "5.1.*"
