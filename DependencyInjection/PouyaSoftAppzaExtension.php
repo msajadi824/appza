@@ -4,7 +4,7 @@ namespace PouyaSoft\AppzaBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
 /**
@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class PouyaSoftSDateExtension extends Extension
+class PouyaSoftAppzaExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -25,8 +25,8 @@ class PouyaSoftSDateExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
 
-        $this->addAnnotatedClassesToCompile([
-            'PouyaSoft\\AppzaBundle\\Services\\',
-        ]);
+//        $this->addAnnotatedClassesToCompile([
+//            'PouyaSoft\\AppzaBundle\\Services\\',
+//        ]);
     }
 }
