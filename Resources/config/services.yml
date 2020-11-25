@@ -22,7 +22,7 @@ services:
 
     sms:
         class: PouyaSoft\AppzaBundle\Services\SMS
-        arguments: ['@circle.restclient', '%sms_enabled%']
+        arguments: ['@eight_points_guzzle.client.my_client', '%sms_enabled%']
     PouyaSoft\AppzaBundle\Services\SMS: '@sms'
 
     fos_listener:
