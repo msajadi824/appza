@@ -8,68 +8,50 @@ services:
             PouyaSoft\SDateBundle\Service\jDateService: '@pouya_soft.j_sdate_service'
             GuzzleHttp\Client: '@eight_points_guzzle.client.my_client'
 
-    PouyaSoft\AppzaBundle\Services\RequestListener:
-        autowire: true
-        autoconfigure: true
-        public: true
+    request_listener:
+        class: PouyaSoft\AppzaBundle\Services\RequestListener
         arguments: ['@kernel']
 
-    PouyaSoft\AppzaBundle\Services\SerializerListener:
-        autowire: true
-        autoconfigure: true
-        public: true
+    serializer_handler:
+        class: PouyaSoft\AppzaBundle\Services\SerializerListener
         arguments: ['@pouya_soft.j_sdate_service']
 
-    PouyaSoft\AppzaBundle\Services\TwigExtension:
-        autowire: true
-        autoconfigure: true
-        public: true
+    twig_extension:
+        class: PouyaSoft\AppzaBundle\Services\TwigExtension
         arguments: ['@router', '@request_stack', '@pouyasoft_file']
 
-    PouyaSoft\AppzaBundle\Services\SMS:
-        autowire: true
-        autoconfigure: true
-        public: true
+    sms:
+        class: PouyaSoft\AppzaBundle\Services\SMS
         arguments: ['@circle.restclient', '%sms_enabled%']
+    PouyaSoft\AppzaBundle\Services\SMS: '@sms'
 
-    PouyaSoft\AppzaBundle\Services\FOSListener:
-        autowire: true
-        autoconfigure: true
-        public: true
+    fos_listener:
+        class: PouyaSoft\AppzaBundle\Services\FOSListener
         arguments: ['@router', '@sms', '@doctrine.orm.default_entity_manager', '@fos_user.user_manager', '@session']
 
-    PouyaSoft\AppzaBundle\Services\ExcelExport:
-        autowire: true
-        autoconfigure: true
-        public: true
+    excel_export:
+        class: PouyaSoft\AppzaBundle\Services\ExcelExport
         arguments: ['@phpspreadsheet', '@property_accessor', '@pouya_soft.j_sdate_service']
+    PouyaSoft\AppzaBundle\Services\ExcelExport: '@excel_export'
 
-    PouyaSoft\AppzaBundle\Services\Setting:
-        autowire: true
-        autoconfigure: true
-        public: true
+    setting:
+        class: PouyaSoft\AppzaBundle\Services\Setting
         arguments: ['@doctrine.orm.default_entity_manager']
+    PouyaSoft\AppzaBundle\Services\Setting: '@setting'
 
-    PouyaSoft\AppzaBundle\Form\Type\PouyasoftFileType:
-        autowire: true
-        autoconfigure: true
-        public: true
+    pouyasoft_file_type:
+        class: PouyaSoft\AppzaBundle\Form\Type\PouyasoftFileType
         arguments: ['@router', '@vich_uploader.storage', '@vich_uploader.upload_handler', '@vich_uploader.property_mapping_factory', '@property_accessor']
 
-    PouyaSoft\AppzaBundle\Services\PouyasoftFile:
-        autowire: true
-        autoconfigure: true
-        public: true
+    pouyasoft_file:
+        class: PouyaSoft\AppzaBundle\Services\PouyasoftFile
         arguments: ['@router', '@vich_uploader.templating.helper.uploader_helper', '@vich_uploader.property_mapping_factory']
 
-    PouyaSoft\AppzaBundle\Services\Pdf:
-        autowire: true
-        autoconfigure: true
-        public: true
+    Pdf:
+        class: PouyaSoft\AppzaBundle\Services\Pdf
         arguments: ['%kernel.cache_dir%/pdf', '%kernel.project_dir%/public']
+    PouyaSoft\AppzaBundle\Services\Pdf: '@Pdf'
 
-    PouyaSoft\AppzaBundle\Services\SaveSearchSessionHandler:
-        autowire: true
-        autoconfigure: true
-        public: true
+    save_search_session:
+        class: PouyaSoft\AppzaBundle\Services\SaveSearchSessionHandler
         arguments: ['@annotation_reader', '@request_stack', '@router']
