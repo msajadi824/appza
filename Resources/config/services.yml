@@ -9,34 +9,67 @@ services:
             GuzzleHttp\Client: '@eight_points_guzzle.client.my_client'
 
     PouyaSoft\AppzaBundle\Services\RequestListener:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['@kernel']
 
     PouyaSoft\AppzaBundle\Services\SerializerListener:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['@pouya_soft.j_sdate_service']
 
     PouyaSoft\AppzaBundle\Services\TwigExtension:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['@router', '@request_stack', '@pouyasoft_file']
 
     PouyaSoft\AppzaBundle\Services\SMS:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['@circle.restclient', '%sms_enabled%']
 
     PouyaSoft\AppzaBundle\Services\FOSListener:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['@router', '@sms', '@doctrine.orm.default_entity_manager', '@fos_user.user_manager', '@session']
 
     PouyaSoft\AppzaBundle\Services\ExcelExport:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['@phpspreadsheet', '@property_accessor', '@pouya_soft.j_sdate_service']
 
     PouyaSoft\AppzaBundle\Services\Setting:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['@doctrine.orm.default_entity_manager']
 
     PouyaSoft\AppzaBundle\Form\Type\PouyasoftFileType:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['@router', '@vich_uploader.storage', '@vich_uploader.upload_handler', '@vich_uploader.property_mapping_factory', '@property_accessor']
 
     PouyaSoft\AppzaBundle\Services\PouyasoftFile:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['@router', '@vich_uploader.templating.helper.uploader_helper', '@vich_uploader.property_mapping_factory']
 
     PouyaSoft\AppzaBundle\Services\Pdf:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['%kernel.cache_dir%/pdf', '%kernel.project_dir%/public']
 
     PouyaSoft\AppzaBundle\Services\SaveSearchSessionHandler:
+        autowire: true
+        autoconfigure: true
+        public: true
         arguments: ['@annotation_reader', '@request_stack', '@router']
