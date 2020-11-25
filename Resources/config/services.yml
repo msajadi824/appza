@@ -1,34 +1,55 @@
 services:
-    # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
         public: true
         bind:
             Roromix\Bundle\SpreadsheetBundle\Factory: '@phpspreadsheet'
             PouyaSoft\SDateBundle\Service\jDateService: '@pouya_soft.j_sdate_service'
             GuzzleHttp\Client: '@eight_points_guzzle.client.my_client'
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
-    PouyaSoft\AppzaBundle\Services:
-        resource: '../../services/*'
+    request_listener:
+        class: PouyaSoft\AppzaBundle\Services\RequestListener
+        arguments: ['@kernel']
 
-    # controllers are imported separately to make sure services can be injected
-    # as action arguments even if you don't extend any base controller class
-#    PouyaSoft\AppzaBundle\Controller\:
-#        resource: '../../Controller/'
-#        tags: ['controller.service_arguments']
+    serializer_handler:
+        class: PouyaSoft\AppzaBundle\Services\SerializerListener
+        tags:
+            - { name: jms_serializer.handler, type: DateTime, format: json, priority: -10, method: serializeDateTimeToJson}
+        arguments: ['@pouya_soft.j_sdate_service']
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    twig_extension:
+        class: PouyaSoft\AppzaBundle\Services\TwigExtension
+        arguments: ['@router', '@request_stack', '@pouyasoft_file']
 
-    # explicitly configure the service
-    PouyaSoft\AppzaBundle\Services\SMS:
-        arguments:
-            $sms_enabled: '%sms_enabled%'
+    sms:
+        class: PouyaSoft\AppzaBundle\Services\SMS
+        arguments: ['@circle.restclient', '%sms_enabled%']
 
-    PouyaSoft\AppzaBundle\Services\Pdf:
-        arguments:
-            $cacheDir: '%kernel.cache_dir%/pdf'
-            $webDir: '%kernel.project_dir%/public'
+    fos_listener:
+        class: PouyaSoft\AppzaBundle\Services\FOSListener
+        arguments: ['@router', '@sms', '@doctrine.orm.default_entity_manager', '@fos_user.user_manager', '@session']
+
+    excel_export:
+        class: PouyaSoft\AppzaBundle\Services\ExcelExport
+        arguments: ['@phpspreadsheet', '@property_accessor', '@pouya_soft.j_sdate_service']
+
+    setting:
+        class: PouyaSoft\AppzaBundle\Services\Setting
+        arguments: ['@doctrine.orm.default_entity_manager']
+
+    pouyasoft_file_type:
+        class: PouyaSoft\AppzaBundle\Form\Type\PouyasoftFileType
+        arguments: ['@router', '@vich_uploader.storage', '@vich_uploader.upload_handler', '@vich_uploader.property_mapping_factory', '@property_accessor']
+
+    pouyasoft_file:
+        class: PouyaSoft\AppzaBundle\Services\PouyasoftFile
+        arguments: ['@router', '@vich_uploader.templating.helper.uploader_helper', '@vich_uploader.property_mapping_factory']
+
+    Pdf:
+        class: PouyaSoft\AppzaBundle\Services\Pdf
+        arguments: ['%kernel.cache_dir%/pdf', '%kernel.project_dir%/public']
+
+    save_search_session:
+        class: PouyaSoft\AppzaBundle\Services\SaveSearchSessionHandler
+        arguments: ['@annotation_reader', '@request_stack', '@router']
