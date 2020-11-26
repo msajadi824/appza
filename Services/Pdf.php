@@ -33,7 +33,7 @@ class Pdf
             'mode' => 'utf-8',
             'direction' => 'rtl',
             'tempDir' => $this->cacheDir . '/mpdf_tmp/',
-            'fontDir' => array_merge($fontDirs, [$this->webDir . '/assets/font']),
+            'fontDir' => array_merge($fontDirs, [$this->webDir . '/bundles/pouyasoftappza/font']),
             'fontdata' => $fontData + [
                     'vazir' => ['R' => 'Vazir-FD.ttf', 'B' => 'Vazir-Bold-FD.ttf', 'useOTL' => 0xFF, 'useKashida' => 75]
                 ],

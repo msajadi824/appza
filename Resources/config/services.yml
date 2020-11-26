@@ -11,8 +11,13 @@ services:
     PouyaSoft\SDateBundle\Service\jDateService: '@pouya_soft.j_sdate_service'
     GuzzleHttp\Client: '@eight_points_guzzle.client.my_client'
 
-    PouyaSoft\AppzaBundle\Services\:
-        resource: '../../services/*'
+    PouyaSoft\AppzaBundle\:
+        resource: '../../'
+        exclude:
+            - '../../DependencyInjection/'
+            - '../../Entity/'
+            - '../../Kernel.php'
+            - '../../Tests/'
 
     PouyaSoft\AppzaBundle\Services\SMS:
         arguments:
