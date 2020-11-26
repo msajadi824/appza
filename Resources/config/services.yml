@@ -1,12 +1,11 @@
+parameters:
+    container.dumper.inline_factories: true
+
 services:
     _defaults:
         autowire: true
         autoconfigure: true
         public: true
-        bind:
-            Roromix\Bundle\SpreadsheetBundle\Factory: '@phpspreadsheet'
-            PouyaSoft\SDateBundle\Service\jDateService: '@pouya_soft.j_sdate_service'
-            GuzzleHttp\Client: '@eight_points_guzzle.client.my_client'
 
     Roromix\Bundle\SpreadsheetBundle\Factory: '@phpspreadsheet'
     PouyaSoft\SDateBundle\Service\jDateService: '@pouya_soft.j_sdate_service'
