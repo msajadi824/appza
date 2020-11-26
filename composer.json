@@ -72,6 +72,5 @@
         "symfony": {
             "require": "5.1.*"
         }
-    },
-    "minimum-stability": "dev"
+    }
 }
