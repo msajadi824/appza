@@ -60,6 +60,11 @@
             "PouyaSoft\\AppzaBundle\\": ""
         }
     },
+    "scripts": {
+        "auto-scripts": {
+            "elfinder:install": "symfony-cmd"
+        }
+    },
     "extra": {
         "symfony": {
             "require": "5.1.*"
