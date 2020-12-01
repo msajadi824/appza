@@ -21,7 +21,7 @@ services:
 
     PouyaSoft\AppzaBundle\Services\SMS:
         arguments:
-            $sms_enabled: '%sms_enabled%'
+            env: '"kernel.environment%'
 
     PouyaSoft\AppzaBundle\Services\Pdf:
         arguments:

@@ -15,13 +15,13 @@ class SMS
     private $SecretKey = '';
     private $LineNumber = '';
 
-    private $sms_enabled;
+    private $env;
     private $restClient;
 
-    public function __construct(Client $restClient, $sms_enabled)
+    public function __construct(Client $restClient, $env)
     {
         $this->restClient = $restClient;
-        $this->sms_enabled = $sms_enabled;
+        $this->env = $env;
     }
 
     private function getToken()
@@ -196,7 +196,7 @@ class SMS
         $smsEntity->setMobile($mobile ? $mobile : $user->getMobile());
         $smsEntity->setDelivery(SMSEntity::DELIVERY_NOT_SENT);
 
-        if(!$this->sms_enabled) {
+        if($this->env == 'env') {
             $smsEntity->setDelivery(SMSEntity::DELIVERY_INACTIVE);
             $em->persist($smsEntity);
             $em->flush();
@@ -227,7 +227,7 @@ class SMS
         $smsEntity->setMobile($mobile ? $mobile : $user->getMobile());
         $smsEntity->setDelivery(SMSEntity::DELIVERY_NOT_SENT);
 
-        if(!$this->sms_enabled) {
+        if($this->env == 'env') {
             $smsEntity->setDelivery(SMSEntity::DELIVERY_INACTIVE);
             $em->persist($smsEntity);
             $em->flush();
