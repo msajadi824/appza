@@ -21,7 +21,7 @@ services:
 
     PouyaSoft\AppzaBundle\Services\SMS:
         arguments:
-            env: '"kernel.environment%'
+            $env: '"kernel.environment%'
 
     PouyaSoft\AppzaBundle\Services\Pdf:
         arguments:
