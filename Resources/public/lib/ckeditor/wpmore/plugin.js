@@ -1,4 +1,4 @@
-﻿/**
+/**
  * CKEditor plugin for inserting simple More tag: <!--more-->
  *
  * This is modified from the WPMore plugin in the CKEditor extension for WordPress
