@@ -53,7 +53,7 @@ class ExcelExport
                 /** @var Callable $toStringFunction */
                 $toStringFunction = $columnOption['convert'] ?? [$this, 'valueToStringDefault'];
 
-                $newRow[] = $toStringFunction($columnOption['property'] ? $this->propertyAccessor->getValue($row, $columnOption['property']) : null, $row, $columnOption);
+                $newRow[] = $toStringFunction(!empty($columnOption['property']) ? $this->propertyAccessor->getValue($row, $columnOption['property']) : null, $row, $columnOption);
             }
             $selectedData []= $newRow;
         }
