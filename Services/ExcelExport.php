@@ -40,6 +40,7 @@ class ExcelExport
      *          'size' => PageSetup::PAPERSIZE_A5,
      *          'orientation' => PageSetup::ORIENTATION_PORTRAIT,
      *          'freezePane' => 'A2',
+     *          'sumTitleFirstCol' => false,
      * ...]
      * @return StreamedResponse
      */
@@ -52,7 +53,7 @@ class ExcelExport
                 /** @var Callable $toStringFunction */
                 $toStringFunction = $columnOption['convert'] ?? [$this, 'valueToStringDefault'];
 
-                $newRow[] = $toStringFunction($columnOption['property'] ? $this->propertyAccessor->getValue($row, $columnOption['property']) : null, $row, $columnOption);
+                $newRow[] = $toStringFunction(isset($columnOption['property']) ? $this->propertyAccessor->getValue($row, $columnOption['property']) : null, $row, $columnOption);
             }
             $selectedData []= $newRow;
         }
@@ -101,7 +102,11 @@ class ExcelExport
                 $activeSheet->setCellValueByColumnAndRow($i+1, $sumRow, '=sum('.$columnString.'2:'.$columnString.($sumRow-1).')');
                 $hasSum = true;
             }
-            elseif($hasSum) {
+            elseif($hasSum && !$fileOptions['sumTitleFirstCol']) {
+                $activeSheet->setCellValueByColumnAndRow($i+1, $sumRow, 'مجموع');
+                $hasSum = false;
+            }
+            elseif($hasSum && $fileOptions['sumTitleFirstCol'] && $i==0) {
                 $activeSheet->setCellValueByColumnAndRow($i+1, $sumRow, 'مجموع');
                 $hasSum = false;
             }
