@@ -64,7 +64,7 @@ class FOSListener implements EventSubscriberInterface
         $user = $event->getUser();
 
         $url = $this->router->generate('fos_user_resetting_reset', ['token' => $user->getConfirmationToken()], UrlGeneratorInterface::ABSOLUTE_URL);
-//        $this->sms->userResettingPassword($user, $url, $this->em);
+        $this->sms->userResettingPassword($user, $url, $this->em);//todo this line can override by project
 
         $event->setResponse(new RedirectResponse($this->router->generate('fos_user_resetting_check_email', ['username' => $user->getUsername()])));
     }

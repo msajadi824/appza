@@ -1,8 +1,9 @@
 <?php
 
-namespace PouyaSoft\AppzaBundle\Services;
+namespace PouyasoftBundle\Services;
 
-use DateTime;
+use Countable;
+use Doctrine\ORM\EntityManager;
 
 class GlobalFunctions
 {
@@ -20,18 +21,11 @@ class GlobalFunctions
             );
     }
 
-    public static function getDomain($url)
+    public static function getUniqueCode($length, $containLetter = false, $containUpperCaseLetter = false)
     {
-        $domain = preg_replace(['/^http:\/\//', '/^https:\/\//', '/^www./'], '', $url);
-
-        return explode('/', $domain)[0];
-    }
-
-    public static function getUniqueCode($length)
-    {
-//        $pool  = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        $pool = "abcdefghijklmnopqrstuvwxyz";
-        $pool .= "0123456789";
+        $pool = "0123456789";
+        if($containLetter) $pool .= "abcdefghijklmnopqrstuvwxyz";
+        if($containUpperCaseLetter) $pool .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         $max = strlen($pool);
 
@@ -42,11 +36,34 @@ class GlobalFunctions
         return $result;
     }
 
-    public static function startTime(DateTime $datetime = null, $hour = null) {
-        return $datetime->setTime($hour != null? $hour: 0, 0, 0);
+    public static function arrayColumnDeep(array $array, $column, $index_key = null, $subArrayProperty = null)
+    {
+        if($subArrayProperty)
+            foreach ($array as $key => $value)
+                if (isset($value->{$subArrayProperty}) && (is_array($value->{$subArrayProperty}) || $value->{$subArrayProperty} instanceof Countable) && count($value->{$subArrayProperty}) > 0)
+                    $value->{$subArrayProperty} = self::arrayColumnDeep($value->{$subArrayProperty}->toArray(), null, $index_key, $subArrayProperty);
+
+        return array_column($array, $column, $index_key);
     }
 
-    public static function endTime(DateTime $datetime = null, $hour = null) {
-        return $hour != null? $datetime->setTime($hour, 0, 0): $datetime->setTime(23, 59, 59);
+    public static function arrayDeepCopy($arr) {
+        $newArray = array();
+        foreach($arr as $key => $value) {
+            if(is_array($value)) $newArray[$key] = self::arrayDeepCopy($value);
+            else if(is_object($value)) $newArray[$key] = clone $value;
+            else $newArray[$key] = $value;
+        }
+        return $newArray;
+    }
+
+    public static function arrayMergeDeep($arr1, $arr2) {
+        $merged = $arr1;
+        foreach ($arr2 as $k => $v) {
+            if (is_array($v) && isset($arr1[$k]) && is_array($arr1[$k]))
+                $merged[$k] = self::arrayMergeDeep($arr1[$k], $v);
+            else
+                $merged[$k] = $v;
+        }
+        return $merged;
     }
 }

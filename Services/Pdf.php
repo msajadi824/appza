@@ -21,7 +21,7 @@ class Pdf
         $this->webDir = $webDir;
     }
 
-    public function generate($fileName, array $config, $html, $fileAppend = null)
+    public function generate($fileName, array $config, $html, $fileAppend = null, $returnResponse = true)
     {
         $defaultConfig = (new ConfigVariables())->getDefaults();
         $fontDirs = $defaultConfig['fontDir'];
@@ -55,12 +55,17 @@ class Pdf
                 }
             }
 
-            return new Response($pdf->Output('', Destination::STRING_RETURN), 200, [
+            $result = $pdf->Output($fileName, Destination::STRING_RETURN);
+
+            return $returnResponse ? new Response($result, 200, [
                 'content-type' => 'application/pdf',
                 'content-disposition' => sprintf('inline; filename="%s"', $fileName)
-            ]);
+            ]) : $result;
         } catch (MpdfException $e) {
-            throw new BadRequestHttpException($e->getMessage(), $e);
+            if($returnResponse)
+                throw new BadRequestHttpException($e->getMessage(), $e);
+            else
+                return null;
         }
     }
 }

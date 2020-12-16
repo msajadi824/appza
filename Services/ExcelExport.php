@@ -3,6 +3,7 @@
 namespace PouyaSoft\AppzaBundle\Services;
 
 use DateTime;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
@@ -44,7 +45,7 @@ class ExcelExport
      * ...]
      * @return StreamedResponse
      */
-    public function create($data = [], array $columnOptions = [], array $fileOptions = [])
+    public function create($data = [], array $columnOptions = [], array $fileOptions = [], Callable $function = null)
     {
         $selectedData = [];
         foreach ($data as $row) {
@@ -57,6 +58,8 @@ class ExcelExport
             }
             $selectedData []= $newRow;
         }
+
+        Cell::setValueBinder(new ExcelValueBinder());
 
         $phpExcelObject = $this->phpSpreadsheet->createSpreadsheet();
         $phpExcelObject->setActiveSheetIndex(0);
@@ -83,6 +86,9 @@ class ExcelExport
             $columnDimension = $activeSheet->getColumnDimensionByColumn($key + 1);
             $columnDimension->setWidth($columnOption['width']);
             if(isset($columnOption['style'])) $activeSheet->getStyle($columnDimension->getColumnIndex())->applyFromArray($columnOption['style']);
+//            $activeSheet->getStyle($col)->applyFromArray(
+//                isset($headerData[4]) ? GlobalFunctions::arrayMergeDeep($styleDefault, $headerData[4]) : $styleDefault
+//            ); todo test for need this (override style for col)
         }
 
         //write data
@@ -122,12 +128,17 @@ class ExcelExport
                 'vertical' => Alignment::VERTICAL_CENTER,
                 'wrapText' => true,
             ),
+//            'numberFormat' => [
+//                'formatCode' => NumberFormat::FORMAT_TEXT,
+//            ]
         );
 
         $worksheetDataDimension = $activeSheet->calculateWorksheetDataDimension();
         $activeSheet->getStyle($worksheetDataDimension)->applyFromArray($styleFull);
         $activeSheet->getPageSetup()->setPrintArea($worksheetDataDimension);
         $activeSheet->setAutoFilter($worksheetDataDimension);
+
+        if($function) $function($activeSheet, $columnOptions);
 
         //output
         $writer = $this->phpSpreadsheet->createWriter($phpExcelObject, 'Xlsx');
