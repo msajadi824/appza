@@ -1,7 +1,8 @@
 <?php
 
-namespace PouyasoftBundle\Services;
+namespace PouyaSoft\AppzaBundle\Services;
 
+use DateTime;
 use Countable;
 use Doctrine\ORM\EntityManager;
 
@@ -21,6 +22,13 @@ class GlobalFunctions
             );
     }
 
+    public static function getDomain($url)
+    {
+        $domain = preg_replace(['/^http:\/\//', '/^https:\/\//', '/^www./'], '', $url);
+
+        return explode('/', $domain)[0];
+    }
+
     public static function getUniqueCode($length, $containLetter = false, $containUpperCaseLetter = false)
     {
         $pool = "0123456789";
@@ -34,6 +42,14 @@ class GlobalFunctions
             $result .= $pool[random_int(0, $max-1)];
 
         return $result;
+    }
+
+    public static function startTime(DateTime $datetime = null, $hour = null) {
+        return $datetime->setTime($hour != null? $hour: 0, 0, 0);
+    }
+
+    public static function endTime(DateTime $datetime = null, $hour = null) {
+        return $hour != null? $datetime->setTime($hour, 0, 0): $datetime->setTime(23, 59, 59);
     }
 
     public static function arrayColumnDeep(array $array, $column, $index_key = null, $subArrayProperty = null)

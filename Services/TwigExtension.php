@@ -2,8 +2,6 @@
 
 namespace PouyaSoft\AppzaBundle\Services;
 
-use App\Entity\Item;
-use App\Entity\Menu;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
