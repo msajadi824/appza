@@ -16,8 +16,8 @@ class PasswordType extends AbstractType
         $builder
             ->add('plainPassword', RepeatedType::class, array(
                 'type' => \Symfony\Component\Form\Extension\Core\Type\PasswordType::class,
-                'first_options' => array('label' => 'کلمه عبور جدید *'),
-                'second_options' => array('label' => 'تائید کلمه عبور جدید *')
+                'first_options' => array('label' => 'کلمه عبور جدید'),
+                'second_options' => array('label' => 'تائید کلمه عبور جدید')
             ))
         ;
     }
