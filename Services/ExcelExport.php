@@ -99,7 +99,6 @@ class ExcelExport
             ->fromArray(array_column($columnOptions, 'title'), null, 'A1')
             ->fromArray($selectedData, null, 'A2')
             ->setRightToLeft(true)
-            ->freezePane(isset($fileOptions['freezePane']) ? strtoupper($fileOptions['freezePane']) : 'A2')
         ;
 
         $hasSum = false;
@@ -142,6 +141,7 @@ class ExcelExport
         $activeSheet->getStyle($worksheetDataDimension)->applyFromArray($styleFull);
         $activeSheet->getPageSetup()->setPrintArea($worksheetDataDimension);
         $activeSheet->setAutoFilter($worksheetDataDimension);
+        $activeSheet->freezePane(isset($fileOptions['freezePane']) ? strtoupper($fileOptions['freezePane']) : 'A2');
 
         if(isset($fileOptions['event_output'])) $fileOptions['event_output']($activeSheet, $columnOptions);
 
