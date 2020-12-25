@@ -42,6 +42,7 @@ class ExcelExport
      *          'orientation' => PageSetup::ORIENTATION_PORTRAIT,
      *          'freezePane' => 'A2',
      *          'sumTitleFirstCol' => false,
+     *          'event_start' ==> null, function($activeSheet, $columnOptions)
      *          'event_final' ==> null, function($activeSheet, $columnOptions)
      *          'event_output' ==> null, function($activeSheet, $columnOptions)
      * ...]
@@ -61,11 +62,11 @@ class ExcelExport
             $selectedData []= $newRow;
         }
 
-        Cell::setValueBinder(new ExcelValueBinder());
-
         $phpExcelObject = $this->phpSpreadsheet->createSpreadsheet();
         $phpExcelObject->setActiveSheetIndex(0);
         $activeSheet = $phpExcelObject->getActiveSheet();
+
+        if(isset($fileOptions['event_start'])) $fileOptions['event_start']($activeSheet, $columnOptions);
 
         $activeSheet->getPageSetup()
             ->setOrientation($fileOptions['orientation'] ?? PageSetup::ORIENTATION_PORTRAIT)
