@@ -74,7 +74,7 @@ class ExcelExport
             ->setFitToHeight(0)
             ->setHorizontalCentered(true)
             ->setVerticalCentered(false)
-            ->setRowsToRepeatAtTopByStartAndEnd(1, 2);
+            ->setRowsToRepeatAtTopByStartAndEnd(1, 1);
 
         $activeSheet->getPageMargins()
             ->setTop(1 * 0.3937008)
