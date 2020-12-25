@@ -42,10 +42,12 @@ class ExcelExport
      *          'orientation' => PageSetup::ORIENTATION_PORTRAIT,
      *          'freezePane' => 'A2',
      *          'sumTitleFirstCol' => false,
+     *          'event_final' ==> null, function($activeSheet, $columnOptions)
+     *          'event_output' ==> null, function($activeSheet, $columnOptions)
      * ...]
      * @return StreamedResponse
      */
-    public function create($data = [], array $columnOptions = [], array $fileOptions = [], Callable $function = null)
+    public function create($data = [], array $columnOptions = [], array $fileOptions = [])
     {
         $selectedData = [];
         foreach ($data as $row) {
@@ -133,12 +135,14 @@ class ExcelExport
 //            ]
         );
 
+        if(isset($fileOptions['event_final'])) $fileOptions['event_output']($activeSheet, $columnOptions);
+
         $worksheetDataDimension = $activeSheet->calculateWorksheetDataDimension();
         $activeSheet->getStyle($worksheetDataDimension)->applyFromArray($styleFull);
         $activeSheet->getPageSetup()->setPrintArea($worksheetDataDimension);
         $activeSheet->setAutoFilter($worksheetDataDimension);
 
-        if($function) $function($activeSheet, $columnOptions);
+        if(isset($fileOptions['event_output'])) $fileOptions['event_output']($activeSheet, $columnOptions);
 
         //output
         $writer = $this->phpSpreadsheet->createWriter($phpExcelObject, 'Xlsx');
