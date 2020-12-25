@@ -135,7 +135,7 @@ class ExcelExport
 //            ]
         );
 
-        if(isset($fileOptions['event_final'])) $fileOptions['event_output']($activeSheet, $columnOptions);
+        if(isset($fileOptions['event_final'])) $fileOptions['event_final']($activeSheet, $columnOptions);
 
         $worksheetDataDimension = $activeSheet->calculateWorksheetDataDimension();
         $activeSheet->getStyle($worksheetDataDimension)->applyFromArray($styleFull);
