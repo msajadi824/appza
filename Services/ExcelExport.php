@@ -110,11 +110,11 @@ class ExcelExport
                 $activeSheet->setCellValueByColumnAndRow($i+1, $sumRow, '=sum('.$columnString.'2:'.$columnString.($sumRow-1).')');
                 $hasSum = true;
             }
-            elseif($hasSum && !$fileOptions['sumTitleFirstCol']) {
+            elseif($hasSum && empty($fileOptions['sumTitleFirstCol'])) {
                 $activeSheet->setCellValueByColumnAndRow($i+1, $sumRow, 'مجموع');
                 $hasSum = false;
             }
-            elseif($hasSum && $fileOptions['sumTitleFirstCol'] && $i==0) {
+            elseif($hasSum && !empty($fileOptions['sumTitleFirstCol']) && $i==0) {
                 $activeSheet->setCellValueByColumnAndRow($i+1, $sumRow, 'مجموع');
                 $hasSum = false;
             }
