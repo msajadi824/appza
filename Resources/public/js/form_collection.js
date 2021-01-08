@@ -1,29 +1,39 @@
-jQuery.fn.formCollection = function(addButtonTitle, removeButtonTitle, addButtonClick) {
-    var collectionHolder = $(this[0]);
-    var index = collectionHolder.children().length;
+jQuery.fn.formCollection = function(addButtonTitle, removeButtonTitle, addButtonClick, removeButtonClick) {
+    let collectionHolder = $(this[0]);
+    let index = collectionHolder.children().length;
 
-    var addButton = $('<a class="btn btn-info" href="#">'+ (addButtonTitle || $(collectionHolder).attr('add_title') || 'جدید') +'</a>');
+    let addButton = $('<a class="btn btn-info" href="#">'+ (addButtonTitle || $(collectionHolder).attr('add_title') || 'جدید') +'</a>');
     addButton.on('click', function(e) {
         e.preventDefault();
 
-        var newForm = $(collectionHolder.data('prototype').replace(/label__/g, '').replace(/__name__/g, index  ++));
-        deleteButtonInForm(newForm);
-        addButtonWrapper.before(newForm);
+        let form = $(collectionHolder.data('prototype').replace(/label__/g, '').replace(/__name__/g, String(index++)));
 
-        if(addButtonClick) addButtonClick(newForm);
+        let callBack = function () {
+            deleteButtonInForm(form, removeButtonClick);
+            addButtonWrapper.before(form);
+        }
+
+        if(addButtonClick) addButtonClick(form, callBack);
+        else callBack();
     });
 
-    var addButtonWrapper = $('<div><div class="form-group"><div class="col-sm-2"></div><div class="col-sm-10" id="form_collection_add"></div></div><hr/></div>');
+    let addButtonWrapper = $('<div><div class="form-group"><div class="col-sm-2"></div><div class="col-sm-10" id="form_collection_add"></div></div><hr/></div>');
     addButtonWrapper.find('#form_collection_add').append(addButton);
     collectionHolder.append(addButtonWrapper);
 
-    var formToDelete;
-    var deleteButtonInForm = function(form) {
-        var removeButton = $('<a class="btn btn-sm btn-danger" href="#">'+ (removeButtonTitle || $(collectionHolder).attr('remove_title') || 'حذف') +'</a>');
+    let formToDelete;
+    let deleteButtonInForm = function(form) {
+        let removeButton = $('<a class="btn btn-sm btn-danger" href="#">'+ (removeButtonTitle || $(collectionHolder).attr('remove_title') || 'حذف') +'</a>');
         removeButton.on('click', function(e) {
             e.preventDefault();
             formToDelete = form;
-            myModal('حذف', 'آیا این مورد حذف شود؟', 'YesNo', function () { formToDelete.remove(); });
+
+            let callBack = function () {
+                myModal('حذف', 'آیا این مورد حذف شود؟', 'YesNo', function () { formToDelete.remove(); }, null);
+            };
+
+            if(removeButtonClick) removeButtonClick(form, callBack);
+            else callBack();
         });
 
         form.find('legend').first().html(removeButton);
