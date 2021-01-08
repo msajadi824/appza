@@ -43,7 +43,7 @@ class PouyasoftCollectionType extends Base
             'removeButtonTitle' => '',
             'addButtonClick' => null,
             'removeButtonClick' => null,
-            'changeInDatabase' => false,
+            'persistInDatabase' => false,
         ]);
 
         $resolver->setAllowedTypes('javascript', ['bool']);
@@ -51,15 +51,14 @@ class PouyasoftCollectionType extends Base
         $resolver->setAllowedTypes('removeButtonTitle', ['string']);
         $resolver->setAllowedTypes('addButtonClick', ['string', 'null']);
         $resolver->setAllowedTypes('removeButtonClick', ['string', 'null']);
-        $resolver->setAllowedTypes('changeInDatabase', ['bool']);
+        $resolver->setAllowedTypes('persistInDatabase', ['bool']);
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
 
-        if($options['changeInDatabase']) {
-
+        if($options['persistInDatabase']) {
             $beforeChildren = [];
             $em = $this->em;
 
