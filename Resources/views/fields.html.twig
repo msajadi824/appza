@@ -217,7 +217,7 @@
     {% if javascript %}
     <script>
         $(function () {
-            collectionInit('div#{{ id }}', '{{ javascript_add_title }}', {{ form.children|length }}, {{ javascript_add_click_function_name ?: 'null' }});
+            $('#{{ id }}').formCollection('{{ addButtonTitle }}','{{ removeButtonTitle }}',{{ addButtonClick ?? 'null' }},{{ removeButtonClick ?? 'null' }});
         });
     </script>
     {% endif %}

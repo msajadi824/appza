@@ -14,8 +14,10 @@ class PouyasoftCollectionType extends Base
         parent::buildView($view, $form, $options);
 
         $view->vars['javascript'] = $options['javascript'];
-        $view->vars['javascript_add_title'] = $options['javascript_add_title'];
-        $view->vars['javascript_add_click_function_name'] = $options['javascript_add_click_function_name'];
+        $view->vars['addButtonTitle'] = $options['addButtonTitle'];
+        $view->vars['removeButtonTitle'] = $options['removeButtonTitle'];
+        $view->vars['addButtonClick'] = $options['addButtonClick'];
+        $view->vars['removeButtonClick'] = $options['removeButtonClick'];
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -24,13 +26,17 @@ class PouyasoftCollectionType extends Base
 
         $resolver->setDefaults([
             'javascript' => true,
-            'javascript_add_title' => 'مورد جدید',
-            'javascript_add_click_function_name' => null,
+            'addButtonTitle' => '',
+            'removeButtonTitle' => '',
+            'addButtonClick' => null,
+            'removeButtonClick' => null,
         ]);
 
         $resolver->setAllowedTypes('javascript', ['bool']);
-        $resolver->setAllowedTypes('javascript_add_title', ['string', 'null']);
-        $resolver->setAllowedTypes('javascript_add_click_function_name', ['string', 'null']);
+        $resolver->setAllowedTypes('addButtonTitle', ['string']);
+        $resolver->setAllowedTypes('removeButtonTitle', ['string']);
+        $resolver->setAllowedTypes('addButtonClick', ['string', 'null']);
+        $resolver->setAllowedTypes('removeButtonClick', ['string', 'null']);
     }
 
     public function getBlockPrefix() : string
