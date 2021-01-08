@@ -17,8 +17,6 @@ class PouyasoftCollectionType extends Base
     /** @var  EntityManagerInterface */
     private $em;
 
-    private static $beforeChildren = [];
-
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
@@ -45,6 +43,7 @@ class PouyasoftCollectionType extends Base
             'removeButtonTitle' => '',
             'addButtonClick' => null,
             'removeButtonClick' => null,
+            'changeInDatabase' => false,
         ]);
 
         $resolver->setAllowedTypes('javascript', ['bool']);
@@ -52,49 +51,42 @@ class PouyasoftCollectionType extends Base
         $resolver->setAllowedTypes('removeButtonTitle', ['string']);
         $resolver->setAllowedTypes('addButtonClick', ['string', 'null']);
         $resolver->setAllowedTypes('removeButtonClick', ['string', 'null']);
+        $resolver->setAllowedTypes('changeInDatabase', ['bool']);
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         parent::buildForm($builder, $options);
 
-        $beforeChildren = static::$beforeChildren;
-        $em = $this->em;
+        if($options['changeInDatabase']) {
 
-        $builder
-            ->addEventListener(FormEvents::POST_SET_DATA, function(FormEvent $event) use (&$beforeChildren) {
-                $form = $event->getForm();
-                $beforeChildren [$form->getParent()->getName().'.'.$form->getName()]= $event->getData()->toArray();
-            })
-            ->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use (&$beforeChildren, $em) {
-                $form = $event->getForm();
-                $currentChildren = $event->getData()->toArray();
-                $parent = $form->getParent()->getData();
+            $beforeChildren = [];
+            $em = $this->em;
 
-                $getFieldName = 'get'.ucfirst($form->getName());
-                $addFieldName = 'add'.ucfirst($form->getName());
+            $builder
+                ->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) use (&$beforeChildren) {
+                    $beforeChildren = $event->getData()->toArray();
+                })
+                ->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) use (&$beforeChildren, $em) {
+                    $form = $event->getForm();
+                    $parent = $form->getParent()->getData();
+                    $currentChildren = $event->getData()->toArray();
 
-//                dump($beforeChildren);
-//                dump($currentChildren);
-//                dump($form);
-
-                // delete removed children
-                foreach ($beforeChildren as $child) {
-                    if(!$parent->{$getFieldName}()->contains($child))
-                        $em->remove($child);
-                }
-
-                //persist added items
-                foreach($currentChildren as $child) {
-                    if($child->getId() == null) {
-                        $parent->{$addFieldName}($child);
-                        $em->persist($child);
+                    // delete removed children
+                    foreach ($beforeChildren as $child) {
+                        if (!$parent->{'get' . ucfirst($form->getName())}()->contains($child))
+                            $em->remove($child);
                     }
-                }
-//                dump($currentChildren);
 
-//                die;
-            });
+                    //persist added items
+                    foreach ($currentChildren as $child) {
+                        if ($child->getId() == null) {
+                            $child->{'set' . ucfirst($form->getParent()->getName())}($parent);
+                            $em->persist($child);
+                        }
+                    }
+                });
+        }
     }
 
     public function getBlockPrefix() : string
