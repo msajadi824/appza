@@ -2,13 +2,28 @@
 
 namespace PouyaSoft\AppzaBundle\Form\Type;
 
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType as Base;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PouyasoftCollectionType extends Base
 {
+    /** @var  EntityManagerInterface */
+    private $em;
+
+    private static $beforeChildren = [];
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         parent::buildView($view, $form, $options);
@@ -37,6 +52,49 @@ class PouyasoftCollectionType extends Base
         $resolver->setAllowedTypes('removeButtonTitle', ['string']);
         $resolver->setAllowedTypes('addButtonClick', ['string', 'null']);
         $resolver->setAllowedTypes('removeButtonClick', ['string', 'null']);
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildForm($builder, $options);
+
+        $beforeChildren = static::$beforeChildren;
+        $em = $this->em;
+
+        $builder
+            ->addEventListener(FormEvents::POST_SET_DATA, function(FormEvent $event) use (&$beforeChildren) {
+                $form = $event->getForm();
+                $beforeChildren [$form->getParent()->getName().'.'.$form->getName()]= $event->getData()->toArray();
+            })
+            ->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use (&$beforeChildren, $em) {
+                $form = $event->getForm();
+                $currentChildren = $event->getData()->toArray();
+                $parent = $form->getParent()->getData();
+
+                $getFieldName = 'get'.ucfirst($form->getName());
+                $addFieldName = 'add'.ucfirst($form->getName());
+
+//                dump($beforeChildren);
+//                dump($currentChildren);
+//                dump($form);
+
+                // delete removed children
+                foreach ($beforeChildren as $child) {
+                    if(!$parent->{$getFieldName}()->contains($child))
+                        $em->remove($child);
+                }
+
+                //persist added items
+                foreach($currentChildren as $child) {
+                    if($child->getId() == null) {
+                        $parent->{$addFieldName}($child);
+                        $em->persist($child);
+                    }
+                }
+//                dump($currentChildren);
+
+//                die;
+            });
     }
 
     public function getBlockPrefix() : string
