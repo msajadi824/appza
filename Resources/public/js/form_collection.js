@@ -6,10 +6,12 @@ jQuery.fn.formCollection = function(addButtonTitle, removeButtonTitle, addButton
     addButton.on('click', function(e) {
         e.preventDefault();
 
-        let form = $(collectionHolder.data('prototype').replace(/label__/g, '').replace(/__name__/g, String(index++)));
+        let form_index = ++index;
+        let form = $(collectionHolder.data('prototype').replace(/label__/g, '').replace(/__name__/g, String(form_index)));
+        deleteButtonInForm(form, removeButtonClick);
+        form.attr('data-collection-index', form_index);
 
         let callBack = function () {
-            deleteButtonInForm(form, removeButtonClick);
             addButtonWrapper.before(form);
         }
 
