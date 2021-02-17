@@ -33,11 +33,17 @@ class TwigExtension extends AbstractExtension
         return [
             new TwigFunction('pouyasoft_file', [$this->pouyasoftFile, 'webPath']),
             new TwigFunction('getSetting', [$this, 'getSetting']),
+            new TwigFunction('backUrl', [$this, 'backUrl']),
         ];
     }
 
     public function getSetting()
     {
         return $this->setting;
+    }
+
+    public function backUrl($default = null)
+    {
+        return $this->requestStack->getCurrentRequest()->headers->get('referer', $default);
     }
 }
