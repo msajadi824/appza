@@ -6,8 +6,6 @@ jQuery.fn.formCollection = function(addButtonTitle, removeButtonTitle, addButton
     addButton.on('click', function(e) {
         e.preventDefault();
 
-        index++
-
         let form = $(collectionHolder.data('prototype').replace(/label__/g, '').replace(/__name__/g, index));
         deleteButtonInForm(form, removeButtonClick);
         form.attr('data-collection-index', index);
@@ -18,6 +16,8 @@ jQuery.fn.formCollection = function(addButtonTitle, removeButtonTitle, addButton
 
         if(addButtonClick) addButtonClick(form, callBack);
         else callBack();
+
+        index++
     });
 
     let addButtonWrapper = $('<div><div class="form-group"><div class="col-sm-2"></div><div class="col-sm-10" id="form_collection_add"></div></div><hr/></div>');
