@@ -23,7 +23,7 @@ services:
         arguments:
             $env: '"kernel.environment%'
 
-    PouyaSoft\AppzaBundle\Services\Pdf:
-        arguments:
-            $cacheDir: '%kernel.cache_dir%/pdf'
-            $webDir: '%kernel.project_dir%/public'
+#    PouyaSoft\AppzaBundle\Services\Pdf:
+#        arguments:
+#            $cacheDir: '%kernel.cache_dir%/pdf'
+#            $webDir: '%kernel.project_dir%/public'

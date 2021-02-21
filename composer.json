@@ -22,7 +22,6 @@
         "helios-ag/fm-elfinder-bundle": "^10.0",
         "jms/serializer-bundle": "^3.7",
         "knplabs/knp-paginator-bundle": "^5.3",
-        "mpdf/mpdf": "^8.0",
         "pouyasoft_ir/simple-date-bundle": "^5.0",
         "pouyasoft_ir/user-bundle": "^5.0",
         "roromix/spreadsheetbundle": "^1.0",
