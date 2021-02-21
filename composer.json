@@ -16,7 +16,6 @@
         "ext-json": "*",
         "alexandret/doctrine2-spatial": "^2.0",
         "eightpoints/guzzle-bundle": "^8.2",
-        "endroid/qr-code-bundle": "^3.4",
         "friendsofsymfony/ckeditor-bundle": "^2.2",
         "friendsofsymfony/rest-bundle": "^3.0",
         "helios-ag/fm-elfinder-bundle": "^10.0",
