@@ -57,8 +57,12 @@
         "sort-packages": true
     },
     "autoload" : {
-        "classmap": ["*"],
-        "exclude-from-classmap": ["/Resources/"]
+        "psr-4": {
+            "PouyaSoft\\AppzaBundle\\": ""
+        },
+        "exclude-from-classmap": [
+            "/Resources/"
+        ]
     },
     "extra": {
         "symfony": {
