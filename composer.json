@@ -58,7 +58,7 @@
     },
     "autoload" : {
         "classmap": ["/"],
-        "exclude-from-classmap": ["/Resources/public/"]
+        "exclude-from-classmap": ["/Resources/"]
     },
     "extra": {
         "symfony": {
