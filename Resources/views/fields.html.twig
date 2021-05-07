@@ -235,6 +235,12 @@
                 searchField: ['item'],
                 maxItems: 1,
                 create: function(input){ return {item:input};},
+                createOnBlur: true,
+                render: {
+                    option_create: function(data, escape) {
+                        return '<div class="create">افزودن <strong>' + escape(data.input) + '</strong></div>';
+                    }
+                },
             });
         });
     </script>
