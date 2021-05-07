@@ -16,19 +16,19 @@
 
 {% block form_widget_simple -%}
     {% if attr.unit is defined -%}
-        <div class="input-group">
-    {% endif %}
-    {{- parent() -}}
-    {% if attr.help is defined -%}
-        <small class="form-text text-muted">{{ attr.help|raw }}</small>
-    {%- endif %}
-    {% if attr.unit is defined -%}
-        <div class="input-group-append">
-            <span class="input-group-text">{{ attr.unit|raw }}</span>
-         </div>
-    {%- endif %}
-    {% if attr.unit is defined -%}
-        </div>
+    <div class="input-group">
+        {% endif %}
+        {{- parent() -}}
+        {% if attr.help is defined -%}
+            <small class="form-text text-muted">{{ attr.help|raw }}</small>
+        {%- endif %}
+        {% if attr.unit is defined -%}
+            <div class="input-group-append">
+                <span class="input-group-text">{{ attr.unit|raw }}</span>
+            </div>
+        {%- endif %}
+        {% if attr.unit is defined -%}
+    </div>
     {%- endif %}
     {% if attr.selectize is defined -%}
         <script>
@@ -39,19 +39,19 @@
 
 {% block choice_widget_collapsed -%}
     {% if attr.unit is defined -%}
-        <div class="input-group">
-    {% endif %}
-    {{- parent() -}}
-    {% if attr.help is defined -%}
-        <small class="form-text text-muted">{{ attr.help|raw }}</small>
-    {%- endif %}
-    {% if attr.unit is defined -%}
-        <div class="input-group-append">
-            <span class="input-group-text">{{ attr.unit|raw }}</span>
-        </div>
-    {%- endif %}
-    {% if attr.unit is defined -%}
-        </div>
+    <div class="input-group">
+        {% endif %}
+        {{- parent() -}}
+        {% if attr.help is defined -%}
+            <small class="form-text text-muted">{{ attr.help|raw }}</small>
+        {%- endif %}
+        {% if attr.unit is defined -%}
+            <div class="input-group-append">
+                <span class="input-group-text">{{ attr.unit|raw }}</span>
+            </div>
+        {%- endif %}
+        {% if attr.unit is defined -%}
+    </div>
     {%- endif %}
     {% if attr.selectize is defined -%}
         <script>
@@ -149,7 +149,7 @@
             {%- endif -%}
         {%- endif -%}
         <label{% with { attr: label_attr } %}{{ block('attributes') }}{% endwith %}>
-        {{- widget|raw }}{{ label is not same as(false) ? (translation_domain is same as(false) ? label : label|trans({}, translation_domain))|raw -}}
+            {{- widget|raw }}{{ label is not same as(false) ? (translation_domain is same as(false) ? label : label|trans({}, translation_domain))|raw -}}
         </label>
     {%- endif -%}
 {%- endblock checkbox_radio_label %}
@@ -215,10 +215,27 @@
     {{- block('form_widget') -}}
 
     {% if javascript %}
-    <script>
-        $(function () {
-            $('#{{ id }}').formCollection('{{ addButtonTitle }}','{{ removeButtonTitle }}',{{ addButtonClick ?? 'null' }},{{ removeButtonClick ?? 'null' }});
-        });
-    </script>
+        <script>
+            $(function () {
+                $('#{{ id }}').formCollection('{{ addButtonTitle }}','{{ removeButtonTitle }}',{{ addButtonClick ?? 'null' }},{{ removeButtonClick ?? 'null' }});
+            });
+        </script>
     {% endif %}
 {%- endblock pouyasoft_collection_widget -%}
+
+{%- block text_selectize_widget -%}
+    {{- block('form_widget') -}}
+
+    <script>
+        $(function () {
+            $('#{{ id }}').selectize({
+                options: {{ items|json_encode|raw }},
+                valueField: 'item',
+                labelField: 'item',
+                searchField: ['item'],
+                maxItems: 1,
+                create: function(input){ return {item:input};},
+            });
+        });
+    </script>
+{%- endblock text_selectize_widget -%}
