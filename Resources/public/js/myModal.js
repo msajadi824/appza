@@ -23,8 +23,9 @@ $('#myModal').on('shown.bs.modal', function () {
  * @param {string} $buttonType
  * @param {Object} $buttonYes
  * @param {Object} $buttonNo
+ * @param {Object} $onClose
  */
-function myModal($title, $body, $buttonType, $buttonYes, $buttonNo)
+function myModal($title, $body, $buttonType, $buttonYes, $buttonNo, $onClose)
 {
     var myModal = $("#myModal");
     myModal.find(".modal-title").html($title);
@@ -38,10 +39,9 @@ function myModal($title, $body, $buttonType, $buttonYes, $buttonNo)
                 '<button id="modal-yes" type="button" class="btn btn-danger" data-dismiss="modal">بلی</button>'
             );
             if($buttonYes) myModal.find("#modal-yes").on('click', $buttonYes);
-            if($buttonNo)  {
-                myModal.find("#modal-no").on('click', $buttonNo);
-                $('#myModal').on('hidden.bs.modal', $buttonNo);
-            }
+            if($buttonNo) myModal.find("#modal-no").on('click', $buttonNo);
+            if($onClose) $('#myModal').on('hidden.bs.modal', $onClose);
+            else $('#myModal').off('hidden.bs.modal');
             break;
         case 'OK':
         case 'ok':
@@ -103,8 +103,8 @@ $('[type="submit"].myModalSure').click(function (e) {
             'YesNo',
             function(){
                 $(myModalFormSubmit).closest('form').submit();
-                myModalFormSubmit = null;
             },
+            null,
             function(){
                 myModalFormSubmit = null;
             }
