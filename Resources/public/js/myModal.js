@@ -38,7 +38,10 @@ function myModal($title, $body, $buttonType, $buttonYes, $buttonNo)
                 '<button id="modal-yes" type="button" class="btn btn-danger" data-dismiss="modal">بلی</button>'
             );
             if($buttonYes) myModal.find("#modal-yes").on('click', $buttonYes);
-            if($buttonNo)  myModal.find("#modal-no").on('click', $buttonNo);
+            if($buttonNo)  {
+                myModal.find("#modal-no").on('click', $buttonNo);
+                $('#myModal').on('hidden.bs.modal', $buttonNo);
+            }
             break;
         case 'OK':
         case 'ok':
@@ -86,4 +89,25 @@ $('a.myModalSure').click(function (e) {
         'YesNo',
         function(){window.location.replace(url)}
     );
+});
+
+var myModalFormSubmit = null;
+$('[type="submit"].myModalSure').click(function (e) {
+    if(!myModalFormSubmit) {
+        myModalFormSubmit = this;
+        e.preventDefault();
+
+        myModal(
+            'هشدار',
+            'آیا مطمئنید؟',
+            'YesNo',
+            function(){
+                $(myModalFormSubmit).closest('form').submit();
+                myModalFormSubmit = null;
+            },
+            function(){
+                myModalFormSubmit = null;
+            }
+        );
+    }
 });
