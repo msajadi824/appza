@@ -32,7 +32,7 @@
     {%- endif %}
     {% if attr.selectize is defined -%}
         <script>
-            $(function() { $('#{{ id }}').selectize(); });
+            $(function() { $('#{{ id }}').selectize({{ attr.selectize|e }}); });
         </script>
     {%- endif %}
 {%- endblock form_widget_simple %}
@@ -55,7 +55,7 @@
     {%- endif %}
     {% if attr.selectize is defined -%}
         <script>
-            $(function() { $('#{{ id }}').selectize(); });
+            $(function() { $('#{{ id }}').selectize({{ attr.selectize|raw }}); });
         </script>
     {%- endif %}
 {%- endblock choice_widget_collapsed %}
