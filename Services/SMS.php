@@ -11,25 +11,22 @@ use GuzzleHttp\Client;
 
 class SMS
 {
-    private $apiKey = '';
-    private $SecretKey = '';
-    private $LineNumber = '';
-
+    private $sms;
     private $env;
-    private $restClient;
 
-    public function __construct(Client $restClient, $env)
+    public function __construct($env, array $sms)
     {
-        $this->restClient = $restClient;
         $this->env = $env;
+        $this->sms = $sms;
     }
 
     private function getToken()
     {
         try {
-            $response = $this->restClient->post('http://RestfulSms.com/api/Token', ['json' => [
-                    'UserApiKey' => $this->apiKey,
-                    'SecretKey' => $this->SecretKey
+            $client = new Client();
+            $response = $client->post('http://RestfulSms.com/api/Token', ['json' => [
+                'UserApiKey' => $this->sms['apiKey'],
+                'SecretKey' => $this->sms['secretKey']
             ]]);
             $result = json_decode($response->getBody(), true);
 
@@ -53,14 +50,15 @@ class SMS
         $tokenResult = $this->getToken();
         if($tokenResult['status'] != 'success')
             return $tokenResult;
-        dump($tokenResult);
+        //dump($tokenResult);
 
         try {
-            $response = $this->restClient->get('http://RestfulSms.com/api/MessageSend'. '?' . http_build_query([
-                    'id' => $messageId,
-                ]), [
-                CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'x-sms-ir-secure-token: '.$tokenResult['tokenKey']]
+            $client = new Client([
+                'headers' => ['Content-Type' => 'application/json', 'x-sms-ir-secure-token' => $tokenResult['tokenKey']]
             ]);
+            $response = $client->get('http://RestfulSms.com/api/MessageSend'. '?' . http_build_query([
+                    'id' => $messageId,
+                ]));
             $result = json_decode($response->getBody(), true);
 
             return [
@@ -86,12 +84,13 @@ class SMS
 //        dump($tokenResult);
 
         try {
-            $response = $this->restClient->post('http://RestfulSms.com/api/VerificationCode', ['json' => [
+            $client = new Client([
+                'headers' => ['Content-Type' => 'application/json', 'x-sms-ir-secure-token' => $tokenResult['tokenKey']]
+            ]);
+            $response = $client->post('http://RestfulSms.com/api/VerificationCode', ['json' => [
                 'Code' => $code,
                 'MobileNumber' => $mobile,
-            ]], [
-                CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'x-sms-ir-secure-token: '.$tokenResult['tokenKey']]
-            ]);
+            ]] );
             $result = json_decode($response->getBody(), true);
 
             return [
@@ -114,7 +113,6 @@ class SMS
         $tokenResult = $this->getToken();
         if($tokenResult['status'] != 'success')
             return $tokenResult;
-//        dump($tokenResult);
 
         $parameterArray = [];
         foreach ($params as $paramKey => $paramValue) {
@@ -122,15 +120,15 @@ class SMS
         }
 
         try {
-            $response = $this->restClient->post('http://RestfulSms.com/api/UltraFastSend', ['json' => [
+            $client = new Client([
+                'headers' => ['Content-Type' => 'application/json', 'x-sms-ir-secure-token' => $tokenResult['tokenKey']]
+            ]);
+            $response = $client->post('http://RestfulSms.com/api/UltraFastSend', ['json' => [
                 'ParameterArray' => $parameterArray,
                 'Mobile' => $mobile,
                 'TemplateId' => $templateId,
-            ]], [
-                CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'x-sms-ir-secure-token: '.$tokenResult['tokenKey']]
-            ]);
-            $result = json_decode($response->getContent(), true);
-
+            ]]);
+            $result = json_decode($response->getBody(), true);
             return [
                 'status' => $result['IsSuccessful'] ? 'success': 'danger',
                 'message' => $result['Message'],
@@ -152,23 +150,24 @@ class SMS
      * @param bool $continueInError
      * @return array
      */
-    private function messageSend($mobileMessageKeyValue, $sendDateTime = null, $continueInError = true)
+    private function messageSend(array $mobileMessageKeyValue, DateTime $sendDateTime = null, bool $continueInError = null)
     {
         $tokenResult = $this->getToken();
         if($tokenResult['status'] != 'success')
             return $tokenResult;
 
         try {
-            $response = $this->restClient->post('http://RestfulSms.com/api/MessageSend', json_encode([
+            $client = new Client([
+                'headers' => ['Content-Type' => 'application/json', 'x-sms-ir-secure-token' => $tokenResult['tokenKey']]
+            ]);
+            $response = $client->post('http://RestfulSms.com/api/MessageSend', [
                 'MobileNumbers' => array_keys($mobileMessageKeyValue),
                 'Messages' => array_values($mobileMessageKeyValue),
-                'LineNumber' => $this->LineNumber,
+                'LineNumber' => $this->sms['lineNumber'],
                 'SendDateTime' => $sendDateTime ? $sendDateTime->format('Y-m-d\TH:i:s') : null,
                 'CanContinueInCaseOfError' => $continueInError
-            ]), [
-                CURLOPT_HTTPHEADER => ['Content-Type: application/json', 'x-sms-ir-secure-token: '.$tokenResult['tokenKey']]
             ]);
-            $result = json_decode($response->getContent(), true);
+            $result = json_decode($response->getBody(), true);
 
             return [
                 'status' => $result['IsSuccessful'] ? 'success': 'danger',
@@ -193,10 +192,10 @@ class SMS
         $smsEntity->setUser($mobile ? null : $user);
         $smsEntity->setDate(new DateTime());
         $smsEntity->setMessage($templateId);
-        $smsEntity->setMobile($mobile ? $mobile : $user->getMobile());
+        $smsEntity->setMobile($mobile ?: $user->getMobile());
         $smsEntity->setDelivery(SMSEntity::DELIVERY_NOT_SENT);
 
-        if($this->env == 'env') {
+        if($this->env == 'dev') {
             $smsEntity->setDelivery(SMSEntity::DELIVERY_INACTIVE);
             $em->persist($smsEntity);
             $em->flush();
@@ -227,7 +226,7 @@ class SMS
         $smsEntity->setMobile($mobile ? $mobile : $user->getMobile());
         $smsEntity->setDelivery(SMSEntity::DELIVERY_NOT_SENT);
 
-        if($this->env == 'env') {
+        if($this->env == 'dev') {
             $smsEntity->setDelivery(SMSEntity::DELIVERY_INACTIVE);
             $em->persist($smsEntity);
             $em->flush();
@@ -277,7 +276,7 @@ class SMS
 
     public function userLogin(User $user, $password, EntityManager $em)
     {
-        return $this->sendFast($user, null, 19759, SMSEntity::TYPE_LOGIN, [
+        return $this->sendFast($user, null, $this->sms['loginTemplate'], SMSEntity::TYPE_LOGIN, [
             'password' => $password,
         ], $em);
     }
