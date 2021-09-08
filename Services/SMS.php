@@ -11,13 +11,13 @@ use GuzzleHttp\Client;
 
 class SMS
 {
-    private $sms;
+    private $smsConfig;
     private $env;
 
-    public function __construct($env, array $sms)
+    public function __construct($env, array $smsConfig)
     {
         $this->env = $env;
-        $this->sms = $sms;
+        $this->smsConfig = $smsConfig;
     }
 
     private function getToken()
@@ -25,8 +25,8 @@ class SMS
         try {
             $client = new Client();
             $response = $client->post('http://RestfulSms.com/api/Token', ['json' => [
-                'UserApiKey' => $this->sms['apiKey'],
-                'SecretKey' => $this->sms['secretKey']
+                'UserApiKey' => $this->smsConfig['apiKey'],
+                'SecretKey' => $this->smsConfig['secretKey']
             ]]);
             $result = json_decode($response->getBody(), true);
 
@@ -163,7 +163,7 @@ class SMS
             $response = $client->post('http://RestfulSms.com/api/MessageSend', [
                 'MobileNumbers' => array_keys($mobileMessageKeyValue),
                 'Messages' => array_values($mobileMessageKeyValue),
-                'LineNumber' => $this->sms['lineNumber'],
+                'LineNumber' => $this->smsConfig['lineNumber'],
                 'SendDateTime' => $sendDateTime ? $sendDateTime->format('Y-m-d\TH:i:s') : null,
                 'CanContinueInCaseOfError' => $continueInError
             ]);
@@ -276,7 +276,7 @@ class SMS
 
     public function userLogin(User $user, $password, EntityManager $em)
     {
-        return $this->sendFast($user, null, $this->sms['loginTemplate'], SMSEntity::TYPE_LOGIN, [
+        return $this->sendFast($user, null, $this->smsConfig['loginTemplate'], SMSEntity::TYPE_LOGIN, [
             'password' => $password,
         ], $em);
     }

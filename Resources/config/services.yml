@@ -25,7 +25,8 @@ services:
 
     PouyaSoft\AppzaBundle\Services\SMS:
         arguments:
-            $env: '"kernel.environment%'
+            $smsConfig: '%sms_config%'
+            $env: '%kernel.environment%'
 
 #    PouyaSoft\AppzaBundle\Services\Pdf:
 #        arguments:
