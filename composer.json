@@ -24,7 +24,7 @@
         "pouyasoft_ir/simple-date-bundle": "^5.0",
         "friendsofsymfony/user-bundle": "dev-master",
         "roromix/spreadsheetbundle": "^1.0",
-        "vich/uploader-bundle": "^1.18",
+        "vich/uploader-bundle": "^1.15",
         "doctrine/doctrine-fixtures-bundle": "^3.3",
         "symfony/maker-bundle": "^1.23",
         "beberlei/doctrineextensions": "^1.3",
